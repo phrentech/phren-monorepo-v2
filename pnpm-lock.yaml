@@ -165,6 +165,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@phren/core':
+        specifier: workspace:*
+        version: link:../core
       drizzle-orm:
         specifier: ^0.45.1
         version: 0.45.1(@cloudflare/workers-types@4.20260317.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.8.0)
