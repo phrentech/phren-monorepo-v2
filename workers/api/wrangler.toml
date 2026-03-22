@@ -1,0 +1,52 @@
+name = "phren-api"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "phren-db"
+database_id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_SESSIONS"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_PRESENCE"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_CACHE"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_RATE_LIMITS"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_ENCRYPTION_KEYS"
+id = "placeholder"
+
+[[r2_buckets]]
+binding = "R2_PROFILE_IMAGES"
+bucket_name = "phren-profile-images"
+
+[[r2_buckets]]
+binding = "R2_SESSION_RECORDINGS"
+bucket_name = "phren-session-recordings"
+
+[[r2_buckets]]
+binding = "R2_VR_ASSETS"
+bucket_name = "phren-vr-assets"
+
+[[r2_buckets]]
+binding = "R2_AUDIT_ARCHIVE"
+bucket_name = "phren-audit-archive"
+
+[[r2_buckets]]
+binding = "R2_COMPLIANCE_REPORTS"
+bucket_name = "phren-compliance-reports"

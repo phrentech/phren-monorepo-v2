@@ -1,0 +1,28 @@
+export interface Env {
+  DB: D1Database;
+  KV_SESSIONS: KVNamespace;
+  KV_PRESENCE: KVNamespace;
+  KV_CACHE: KVNamespace;
+  KV_RATE_LIMITS: KVNamespace;
+  KV_ENCRYPTION_KEYS: KVNamespace;
+  R2_PROFILE_IMAGES: R2Bucket;
+  R2_SESSION_RECORDINGS: R2Bucket;
+  R2_VR_ASSETS: R2Bucket;
+  R2_AUDIT_ARCHIVE: R2Bucket;
+  R2_COMPLIANCE_REPORTS: R2Bucket;
+  SESSION_COORDINATOR: DurableObjectNamespace;
+  MESSAGING_ROOM: DurableObjectNamespace;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  MICROSOFT_CLIENT_ID: string;
+  MICROSOFT_CLIENT_SECRET: string;
+  MICROSOFT_TENANT: string;
+  APPLE_CLIENT_ID: string;
+  APPLE_TEAM_ID: string;
+  APPLE_KEY_ID: string;
+  APPLE_PRIVATE_KEY: string;
+  LIVEKIT_API_KEY: string;
+  LIVEKIT_API_SECRET: string;
+  LIVEKIT_URL: string;
+  RESEND_API_KEY: string;
+}

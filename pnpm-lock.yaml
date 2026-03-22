@@ -235,7 +235,33 @@ importers:
 
   packages/vr: {}
 
-  workers/api: {}
+  workers/api:
+    dependencies:
+      '@phren/audit':
+        specifier: workspace:*
+        version: link:../../packages/audit
+      '@phren/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@phren/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@phren/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@cloudflare/workers-types@4.20260317.1)(@types/better-sqlite3@7.6.13)(better-sqlite3@12.8.0)
+      hono:
+        specifier: ^4.12.8
+        version: 4.12.8
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20260317.1
+        version: 4.20260317.1
+      wrangler:
+        specifier: ^4.76.0
+        version: 4.76.0(@cloudflare/workers-types@4.20260317.1)
 
   workers/compliance: {}
 
