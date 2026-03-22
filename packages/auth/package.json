@@ -10,5 +10,17 @@
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
+  },
+  "dependencies": {
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@phren/core": "workspace:*",
+    "@phren/db": "workspace:*",
+    "arctic": "^3.7.0",
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "vitest": "^4.1.0"
   }
 }
