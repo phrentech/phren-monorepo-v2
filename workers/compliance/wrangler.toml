@@ -1,0 +1,16 @@
+name = "phren-compliance"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[triggers]
+crons = ["0 */6 * * *", "0 2 * * *", "0 9 1 * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "phren-db"
+database_id = "placeholder"
+
+[[r2_buckets]]
+binding = "R2_COMPLIANCE_REPORTS"
+bucket_name = "phren-compliance-reports"
