@@ -19,3 +19,6 @@ export {
   buildMotionFrame,
 } from './motion/frame-encoder';
 export { type DecodedMotionFrame, createDecodedFrame } from './motion/frame-decoder';
+
+// Motion capture pipeline (browser-only)
+export { MotionCapture, type CaptureConfig } from './motion/capture';

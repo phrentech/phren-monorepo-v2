@@ -112,8 +112,9 @@ export interface HandSolverOutput {
 // ---------------------------------------------------------------------------
 
 export type WorkerMessage =
-  | { type: 'face'; result: FaceLandmarkerResult; timestamp: number }
-  | { type: 'pose'; result: PoseLandmarkerResult; timestamp: number }
-  | { type: 'hands'; result: HandLandmarkerResult; timestamp: number }
-  | { type: 'frame'; face: FaceSolverOutput | null; pose: PoseSolverOutput | null; leftHand: HandSolverOutput | null; rightHand: HandSolverOutput | null; timestamp: number }
+  | { type: 'init'; wasmPath: string; modelPaths: { face: string; pose: string; hand: string } }
+  | { type: 'process_frame'; imageData: ImageBitmap; timestamp: number }
+  | { type: 'init_complete' }
+  | { type: 'frame_result'; timestamp: number; face: FaceLandmarkerResult | null; pose: PoseLandmarkerResult | null; hands: HandLandmarkerResult | null; processingTimeMs: number }
+  | { type: 'performance_warning'; fps: number; recommendation: string }
   | { type: 'error'; message: string };
