@@ -9,6 +9,15 @@
     "build": "tsc",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"No tests yet\""
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@phren/core": "workspace:*",
+    "@phren/db": "workspace:*",
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "vitest": "^3.2.4"
   }
 }

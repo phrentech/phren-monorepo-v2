@@ -1,0 +1,25 @@
+name = "phren-session-coordinator"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[durable_objects.bindings]]
+name = "SESSION_COORDINATOR"
+class_name = "SessionCoordinator"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["SessionCoordinator"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "phren-db"
+database_id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_SESSIONS"
+id = "placeholder"
+
+[[kv_namespaces]]
+binding = "KV_PRESENCE"
+id = "placeholder"
