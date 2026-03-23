@@ -7,6 +7,7 @@ import { authMiddleware } from './middleware/auth';
 import { authRoutes } from './routes/auth';
 import { providerRoutes } from './routes/providers';
 import { appointmentRoutes } from './routes/appointments';
+import { sessionRoutes } from './routes/sessions';
 
 const app = new Hono<{ Bindings: Env; Variables: AppVariables }>();
 
@@ -38,5 +39,6 @@ app.route('/auth', authRoutes);
 app.use('/api/*', authMiddleware);
 app.route('/api/providers', providerRoutes);
 app.route('/api/appointments', appointmentRoutes);
+app.route('/api/sessions', sessionRoutes);
 
 export default app;
