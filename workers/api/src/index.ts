@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { ZodError } from 'zod';
 import type { Env } from './env';
 import type { AppVariables } from './middleware/auth';
 import { authMiddleware } from './middleware/auth';
@@ -20,6 +21,14 @@ app.use(
     credentials: true,
   }),
 );
+
+app.onError((err, c) => {
+  if (err instanceof ZodError) {
+    return c.json({ error: 'Validation failed', details: err.issues }, 400);
+  }
+  console.error('Unhandled error:', err);
+  return c.json({ error: 'Internal server error' }, 500);
+});
 
 app.get('/health', (c) => c.json({ status: 'ok' }));
 

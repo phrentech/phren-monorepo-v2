@@ -1,4 +1,4 @@
-import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, index } from 'drizzle-orm/sqlite-core';
 import { patients } from './patients';
 import { providers } from './providers';
 import { users } from './users';
@@ -18,4 +18,6 @@ export const messages = sqliteTable('messages', {
   content: text('content').notNull(), // encrypted at app layer
   readAt: text('read_at'),
   createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
-});
+}, (table) => [
+  index('idx_messages_conversation_id').on(table.conversationId),
+]);

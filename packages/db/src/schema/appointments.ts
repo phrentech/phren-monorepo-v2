@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core';
 import { patients } from './patients';
 import { providers, providerServices } from './providers';
 
@@ -13,7 +13,11 @@ export const appointments = sqliteTable('appointments', {
   notes: text('notes'),
   sessionId: text('session_id'),
   createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
-});
+}, (table) => [
+  index('idx_appointments_patient_id').on(table.patientId),
+  index('idx_appointments_provider_id').on(table.providerId),
+  index('idx_appointments_scheduled_at').on(table.scheduledAt),
+]);
 
 export const appointmentHistory = sqliteTable('appointment_history', {
   id: text('id').primaryKey(), // ULID

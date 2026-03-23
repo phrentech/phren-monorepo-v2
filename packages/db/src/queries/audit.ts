@@ -1,4 +1,4 @@
-import { eq, and, gte, lte, desc } from 'drizzle-orm';
+import { eq, and, gte, lte, desc, sql } from 'drizzle-orm';
 import type { Database } from '../client';
 import { auditLogs } from '../schema';
 import { generateUlid } from '@phren/core';
@@ -43,9 +43,9 @@ export async function queryByDateRange(
 }
 
 export async function countByActor(db: Database, actorId: string, since: string) {
-  const results = await db
-    .select()
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
     .from(auditLogs)
     .where(and(eq(auditLogs.actorId, actorId), gte(auditLogs.timestamp, since)));
-  return results.length;
+  return result[0]?.count ?? 0;
 }

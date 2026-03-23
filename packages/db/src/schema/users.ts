@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {
   id: text('id').primaryKey(),              // ULID
@@ -14,7 +14,10 @@ export const sessions = sqliteTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id),
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
-});
+}, (table) => [
+  index('idx_sessions_user_id').on(table.userId),
+  index('idx_sessions_expires_at').on(table.expiresAt),
+]);
 
 export const oauthAccounts = sqliteTable('oauth_accounts', {
   providerId: text('provider_id').notNull(),       // 'google' | 'microsoft' | 'apple'

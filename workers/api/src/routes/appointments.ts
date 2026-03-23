@@ -83,8 +83,7 @@ appointmentRoutes.patch('/:id/status', async (c) => {
 
   const validTransitions: Record<string, string[]> = {
     scheduled: ['in_progress', 'cancelled'],
-    in_progress: ['completed', 'paused'],
-    paused: ['in_progress', 'cancelled'],
+    in_progress: ['completed', 'cancelled'],
   };
 
   if (!validTransitions[appointment.status]?.includes(status)) {

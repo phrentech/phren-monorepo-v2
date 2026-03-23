@@ -1,4 +1,4 @@
-import { eq, and, isNull, desc } from 'drizzle-orm';
+import { eq, and, isNull, desc, ne, sql, or } from 'drizzle-orm';
 import type { Database } from '../client';
 import { conversations, messages } from '../schema';
 import { generateUlid } from '@phren/core';
@@ -60,26 +60,25 @@ export async function getMessages(db: Database, conversationId: string, limit = 
 
 export async function markRead(db: Database, conversationId: string, userId: string) {
   const now = new Date().toISOString();
-  const unread = await db
-    .select()
-    .from(messages)
-    .where(and(eq(messages.conversationId, conversationId), isNull(messages.readAt)));
-  for (const msg of unread) {
-    if (msg.senderId !== userId) {
-      await db.update(messages).set({ readAt: now }).where(eq(messages.id, msg.id));
-    }
-  }
+  await db
+    .update(messages)
+    .set({ readAt: now })
+    .where(and(
+      eq(messages.conversationId, conversationId),
+      ne(messages.senderId, userId),
+      isNull(messages.readAt)
+    ));
 }
 
-export async function getUnreadCount(db: Database, userId: string, role: 'patient' | 'provider') {
-  const userConversations = await getConversationsForUser(db, userId, role);
-  let count = 0;
-  for (const conv of userConversations) {
-    const unread = await db
-      .select()
-      .from(messages)
-      .where(and(eq(messages.conversationId, conv.id), isNull(messages.readAt)));
-    count += unread.filter((m) => m.senderId !== userId).length;
-  }
-  return count;
+export async function getUnreadCount(db: Database, userId: string) {
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(messages)
+    .innerJoin(conversations, eq(messages.conversationId, conversations.id))
+    .where(and(
+      or(eq(conversations.patientId, userId), eq(conversations.providerId, userId)),
+      ne(messages.senderId, userId),
+      isNull(messages.readAt)
+    ));
+  return result[0]?.count ?? 0;
 }

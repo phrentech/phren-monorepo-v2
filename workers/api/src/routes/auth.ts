@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { Google, MicrosoftEntraId, Apple } from 'arctic';
+import { Google, MicrosoftEntraId, Apple, decodeIdToken } from 'arctic';
 import { createSession, invalidateSession } from '@phren/auth';
 import { createDb, oauthAccounts, users } from '@phren/db';
 import { eq, and } from 'drizzle-orm';
@@ -64,6 +64,10 @@ authRoutes.get('/:provider', async (c) => {
     { expirationTtl: 600 },
   );
 
+  // Bind state and codeVerifier to the user's browser session via cookies to prevent CSRF
+  c.header('Set-Cookie', `oauth_state=${state}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=600`);
+  c.header('Set-Cookie', `oauth_code_verifier=${codeVerifier}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=600`, { append: true });
+
   return c.redirect(url.toString());
 });
 
@@ -76,6 +80,13 @@ authRoutes.get('/:provider/callback', async (c) => {
 
   if (!code || !state) {
     return c.json({ error: 'Missing code or state' }, 400);
+  }
+
+  // Validate state cookie matches query param to prevent CSRF
+  const cookies = c.req.header('Cookie') || '';
+  const stateCookie = cookies.match(/oauth_state=([^;]+)/)?.[1];
+  if (!stateCookie || stateCookie !== state) {
+    return c.json({ error: 'State mismatch - possible CSRF' }, 403);
   }
 
   const stored = await c.env.KV_SESSIONS.get(`oauth-state:${state}`);
@@ -93,6 +104,10 @@ authRoutes.get('/:provider/callback', async (c) => {
   }
 
   await c.env.KV_SESSIONS.delete(`oauth-state:${state}`);
+
+  // Clear the OAuth state and code verifier cookies
+  c.header('Set-Cookie', 'oauth_state=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0');
+  c.header('Set-Cookie', 'oauth_code_verifier=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0', { append: true });
 
   // Exchange authorization code for tokens
   let providerUserId: string;
@@ -122,10 +137,10 @@ authRoutes.get('/:provider/callback', async (c) => {
   } else if (provider === 'apple') {
     const tokens = await getAppleClient(c.env).validateAuthorizationCode(code);
     const idToken = tokens.idToken();
-    const claims = JSON.parse(atob(idToken.split('.')[1])) as Record<string, string>;
+    const claims = decodeIdToken(idToken) as Record<string, string>;
     providerUserId = claims.sub;
     email = claims.email;
-    name = claims.email.split('@')[0];
+    name = claims.email?.split('@')[0];
   } else {
     return c.json({ error: 'Unknown provider' }, 400);
   }
