@@ -78,8 +78,8 @@ sessionRoutes.post('/join', async (c) => {
   });
   const jwt = await token.toJwt();
 
-  const coordinatorId = c.env.SESSION_COORDINATOR.idFromName(roomName);
-  const doWebSocketUrl = `${c.env.SESSION_COORDINATOR_URL ?? 'wss://session.phrentech.com'}/ws/${coordinatorId}`;
+  const baseUrl = c.env.SESSION_COORDINATOR_URL ?? 'wss://session-coordinator.phrentech.com';
+  const doWebSocketUrl = `${baseUrl}/session/${appointmentId}/ws?userId=${user.id}&role=${role}&name=${encodeURIComponent(user.name)}`;
 
   return c.json({
     token: jwt,
@@ -127,7 +127,7 @@ sessionRoutes.post('/:appointmentId/notes', requireRole('provider'), async (c) =
   const body = await c.req.json<{ content: string }>();
   const { content } = body;
 
-  if (!content) {
+  if (!content?.trim()) {
     return c.json({ error: 'content is required' }, 400);
   }
 
