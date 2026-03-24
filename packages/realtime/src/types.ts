@@ -57,7 +57,7 @@ export interface MotionFrame {
   t: number;
   /** 52 ARKit-compatible blend shape coefficients [0..1] */
   bs: Float32Array;
-  /** 60 bone rotation floats (20 bones * 3 euler angles) */
+  /** 60 bone rotation floats (15 bones * 4 quaternion xyzw) */
   bones: Float32Array;
   /** 80 left hand joint floats */
   lh: Float32Array;

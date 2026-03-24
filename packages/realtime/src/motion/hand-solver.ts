@@ -41,7 +41,7 @@ export const JOINT_LANDMARK_MAP: ReadonlyMap<HandJoint, [number, number]> = new 
   ['ringTip',   [16, 16]],
   ['pinkyMCP',  [17, 18]],
   ['pinkyPIP',  [18, 19]],
-  ['pinkyDIP',  [19, 19]],
+  ['pinkyTip',  [19, 20]],
 ] as const);
 
 const IDENTITY = { x: 0, y: 0, z: 0, w: 1 };

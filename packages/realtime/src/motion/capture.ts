@@ -103,7 +103,9 @@ export class MotionCapture {
     this.videoElement.srcObject = mediaStream;
     this.videoElement.muted = true;
     this.videoElement.playsInline = true;
-    this.videoElement.play();
+    this.videoElement.play().catch((err) => {
+      this.config.onError?.(`Video play failed: ${err.message}`);
+    });
 
     const targetFps = this.config.targetFps ?? 30;
     const intervalMs = Math.round(1000 / targetFps);

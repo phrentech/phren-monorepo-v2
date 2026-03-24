@@ -24,5 +24,6 @@ export interface Env {
   LIVEKIT_API_KEY: string;
   LIVEKIT_API_SECRET: string;
   LIVEKIT_URL: string;
+  SESSION_COORDINATOR_URL?: string;
   RESEND_API_KEY: string;
 }

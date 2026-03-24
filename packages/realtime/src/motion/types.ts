@@ -98,7 +98,7 @@ export const HAND_JOINTS = [
   'ringTip',
   'pinkyMCP',
   'pinkyPIP',
-  'pinkyDIP',
+  'pinkyTip',
 ] as const;
 
 export type HandJoint = (typeof HAND_JOINTS)[number];

@@ -12,6 +12,19 @@ import type {
   MediaState,
 } from './types.js';
 
+// ---- Helpers: sanitization ----
+
+const MAX_CHAT_LENGTH = 2000;
+
+function sanitizeText(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
 // ---- Storage keys ----
 
 const STORAGE_KEY_SESSION = 'sessionData';
@@ -284,10 +297,14 @@ export class SessionCoordinator {
       }
 
       case 'chat': {
+        if (!msg.text || msg.text.length > MAX_CHAT_LENGTH) {
+          this.safeSend(ws, { type: 'error', code: 'INVALID_MESSAGE', message: `Chat text must be 1-${MAX_CHAT_LENGTH} characters` });
+          return;
+        }
         const name = this.getTag(ws, 'name');
         const chatMsg: ServerMessage = {
           type: 'chat',
-          text: msg.text,
+          text: sanitizeText(msg.text),
           from: name ? decodeURIComponent(name) : userId ?? 'unknown',
           fromRole: role ?? 'patient',
           sentAt: Date.now(),

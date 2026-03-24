@@ -54,11 +54,14 @@ sessionRoutes.post('/join', async (c) => {
   if (isNew) {
     const coordinatorId = c.env.SESSION_COORDINATOR.idFromName(roomName);
     const coordinatorStub = c.env.SESSION_COORDINATOR.get(coordinatorId);
-    await coordinatorStub.fetch('https://do/init', {
+    const initResponse = await coordinatorStub.fetch('https://do/init', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appointmentId, roomName }),
+      body: JSON.stringify({ sessionId: session.id, appointmentId, livekitRoomName: roomName }),
     });
+    if (!initResponse.ok) {
+      return c.json({ error: 'Failed to initialize session coordinator' }, 500);
+    }
   }
 
   const token = new AccessToken(c.env.LIVEKIT_API_KEY, c.env.LIVEKIT_API_SECRET, {
@@ -76,7 +79,7 @@ sessionRoutes.post('/join', async (c) => {
   const jwt = await token.toJwt();
 
   const coordinatorId = c.env.SESSION_COORDINATOR.idFromName(roomName);
-  const doWebSocketUrl = `wss://session.phrentech.com/ws/${coordinatorId}`;
+  const doWebSocketUrl = `${c.env.SESSION_COORDINATOR_URL ?? 'wss://session.phrentech.com'}/ws/${coordinatorId}`;
 
   return c.json({
     token: jwt,
@@ -95,6 +98,17 @@ sessionRoutes.get('/:appointmentId/status', async (c) => {
   }
 
   const appointmentId = c.req.param('appointmentId');
+
+  // Verify user is a participant
+  const db = c.get('db' as never) as AppVariables['db'];
+  const appointment = await getAppointmentById(db, appointmentId);
+  if (!appointment) {
+    return c.json({ error: 'Appointment not found' }, 404);
+  }
+  if (appointment.patientId !== user.id && appointment.providerId !== user.id) {
+    return c.json({ error: 'Insufficient permissions' }, 403);
+  }
+
   const roomName = `phren-${appointmentId}`;
 
   const coordinatorId = c.env.SESSION_COORDINATOR.idFromName(roomName);

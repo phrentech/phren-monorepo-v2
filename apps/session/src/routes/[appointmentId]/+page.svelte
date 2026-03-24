@@ -47,7 +47,7 @@
   });
 
   onDestroy(() => {
-    sessionStore.disconnect();
+    sessionStore.disconnect().catch(console.error);
   });
 </script>
 
