@@ -12,11 +12,12 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"dependencies": {
+		"@phren/auth": "workspace:*",
 		"@phren/core": "workspace:*",
 		"@phren/db": "workspace:*",
-		"@phren/auth": "workspace:*",
 		"@phren/realtime": "workspace:*",
-		"@phren/vr": "workspace:*"
+		"@phren/vr": "workspace:*",
+		"livekit-client": "^2.17.3"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "^7.0.0",
